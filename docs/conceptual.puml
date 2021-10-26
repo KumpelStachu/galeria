@@ -1,0 +1,46 @@
+@startuml schema
+
+entity user {
+  username
+  password
+  first_name
+  last_name
+  description
+  public
+}
+
+entity gallery {
+  name
+  description
+  public
+}
+
+entity image {
+  name
+  description
+  public
+}
+
+entity tag {
+  name
+}
+
+entity comment {
+  body
+}
+
+entity like {
+}
+
+
+image }--> gallery
+image }--{ tag
+
+comment }o-> image
+
+like }o-- user
+like }o-- gallery
+like }o-- image
+like }o-- comment
+
+@enduml

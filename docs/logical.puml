@@ -1,0 +1,133 @@
+@startuml schema
+
+entity user {
+  uid: uuid
+  ---
+  username: string
+  password: string
+  roles: json
+  last_login: timestamp
+  deleted_at: timestamp
+  updated_at: timestamp
+  created_at: timestamp
+}
+
+entity profile {
+  user_uid: uuid
+  ---
+  first_name: string
+  last_name: string
+  description: string
+  public: boolean
+  updated_at: timestamp
+  created_at: timestamp
+}
+
+entity gallery {
+  uid: uuid
+  ---
+  name: string
+  description: string
+  user_uid: uuid
+  thumbnail_uid: uuid
+  public: boolean
+  deleted_at: timestamp
+  updated_at: timestamp
+  created_at: timestamp
+}
+
+entity image {
+  uid: uuid
+  ---
+  name: string
+  description: string
+  user_uid: uuid
+  gallery_uid: uuid
+  public: boolean
+  deleted_at: timestamp
+  updated_at: timestamp
+  created_at: timestamp
+}
+
+entity tag {
+  uid: uuid
+  ---
+  name: string
+  user_uid: uuid
+  deleted_at: timestamp
+  updated_at: timestamp
+  created_at: timestamp
+}
+
+entity comment {
+  uid: uuid
+  ---
+  body: string
+  user_uid: uuid
+  image_uid: uuid
+  parent_id: uuid
+  deleted_at: timestamp
+  updated_at: timestamp
+  created_at: timestamp
+}
+
+
+entity like_profile {
+  user_uid: uuid
+  profile_uid: uuid
+  ---
+  created_at: timestamp
+}
+
+entity like_gallery {
+  user_uid: uuid
+  gallery_uid: uuid
+  ---
+  created_at: timestamp
+}
+
+entity like_image {
+  user_uid: uuid
+  image_uid: uuid
+  ---
+  created_at: timestamp
+}
+
+entity like_comment {
+  user_uid: uuid
+  comment_uid: uuid
+  ---
+  created_at: timestamp
+}
+
+
+profile::user_uid <--> user::uid
+
+gallery::user_uid }--> user::uid
+gallery::thumbnail_uid }o--> image::uid
+
+image::user_uid }--> user::uid
+image::gallery_uid }--> gallery::uid
+
+tag::user_uid }--> user::uid
+
+comment::user_uid }--> user::uid
+comment::image_uid }--> image::uid
+comment::parent_id }o--> comment::uid
+
+like_profile::profile_uid }--> profile::uid
+like_profile::user_uid }--> user::uid
+
+like_gallery::user_uid }--> user::uid
+like_gallery::gallery_uid }--> gallery::uid
+
+like_image::user_uid }--> user::uid
+like_image::image_uid }--> image::uid
+
+like_comment::user_uid }--> user::uid
+like_comment::comment_uid }--> comment::uid
+
+tag }--{ gallery
+tag }--{ image
+
+@enduml
