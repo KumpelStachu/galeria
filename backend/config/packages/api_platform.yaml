@@ -5,3 +5,13 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header
+    defaults:
+        formats:
+            - 'json'
+            - 'jsonld'
+        pagination_item_per_page: 25
+    show_webby: false
