@@ -11,11 +11,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post' => ['security' => 'is_granted("ROLE_CREATOR") and object.profile == user'],
+        'post' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_CREATOR") and (object.getProfile() == user))'],
     ],
     itemOperations: [
         'get',
-        'delete' => ['security' => 'is_granted("ROLE_ADMIN") or object.profile == user'],
+        'delete' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)'],
     ]
 )]
 #[ORM\Entity(repositoryClass: TagRepository::class), ORM\HasLifecycleCallbacks]

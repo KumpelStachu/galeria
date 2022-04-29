@@ -19,8 +19,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     collectionOperations: ['get'],
     itemOperations: [
         'get',
-        'patch' => ['security' => 'is_granted("ROLE_ADMIN") or object == user"'],
-        'delete' => ['security' => 'is_granted("ROLE_ADMIN")'],
+        'patch' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)"'],
+        'delete' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN")'],
     ]
 )
 ]

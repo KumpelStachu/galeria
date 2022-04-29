@@ -16,7 +16,7 @@ use App\Controller\GetImageController;
     collectionOperations: ['get'],
     itemOperations: [
         'get',
-        'delete' => ['security' => 'is_granted("ROLE_ADMIN") or object.profile == user'],
+        'delete' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)'],
         'file' => [
             'method' => 'GET',
             'path' => '/images/{id}/file',

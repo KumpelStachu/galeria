@@ -12,11 +12,11 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post' => ['security' => 'object.profile == user'],
+        'post' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)'],
     ],
     itemOperations: [
         'get',
-        'delete' => ['security' => 'is_granted("ROLE_ADMIN") or object.profile == user'],
+        'delete' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)'],
     ]
 )]
 #[ORM\Entity(repositoryClass: CommentRepository::class), ORM\HasLifecycleCallbacks]

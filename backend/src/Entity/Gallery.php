@@ -13,11 +13,11 @@ use App\Controller\AddImageController;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post' => ['security_post_deserialize' => 'is_granted("ROLE_CREATOR") and object.profile == user'],
+        'post' => ['security_post_deserialize' => 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_CREATOR") and (object.getProfile() == user))'],
         'addimage' => [
             'method' => 'POST',
             'path' => '/galleries/{id}/images',
-            'security_post_deserialize' => 'is_granted("ROLE_CREATOR") and object.profile == user',
+            'security_post_deserialize' => 'is_granted("ROLE_ADMIN") or (is_granted("ROLE_CREATOR") and (object.getProfile() == user))',
             'controller' => AddImageController::class,
             'deserialize' => false,
             'openapi_context' => [
