@@ -9,6 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\AddImageController;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 #[ApiResource(
     collectionOperations: [
@@ -68,39 +75,52 @@ use App\Controller\AddImageController;
     ],
     itemOperations: [
         'get',
-        'patch' => ['security' => 'is_granted("ROLE_ADMIN") or object.profile == user"'],
-        'delete' => ['security' => 'is_granted("ROLE_ADMIN") or object.profile == user'],
+        'patch' => ['security_post_deserialize' => 'is_granted("ROLE_ADMIN") or object.profile == user'],
+        'delete' => ['security_post_deserialize' => 'is_granted("ROLE_ADMIN") or object.profile == user'],
     ],
 )]
+#[ApiFilter(OrderFilter::class)]
+#[ApiFilter(SearchFilter::class, properties: ['tags.name' => 'ipartial'])]
 #[ORM\Entity(repositoryClass: GalleryRepository::class), ORM\HasLifecycleCallbacks]
 class Gallery
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private int $id;
 
+    #[ApiFilter(SearchFilter::class, strategy: 'ipartial')]
     #[ORM\Column(length: 320)]
     private string $title;
-
+    
+    #[ApiFilter(BooleanFilter::class)]
     #[ORM\Column]
     private bool $nsfw = false;
 
+    #[ApiFilter(NumericFilter::class)]
+    #[ApiFilter(RangeFilter::class)]
+    private int $pages;
+
+    #[ApiFilter(DateFilter::class)]
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
 
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\ManyToOne(targetEntity: Profile::class, inversedBy: 'galleries')]
     #[ORM\JoinColumn(nullable: false)]
     private Profile $profile;
 
-    #[ApiSubresource]
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\OneToMany(mappedBy: 'gallery', targetEntity: Image::class, orphanRemoval: true)]
     private Collection $images;
 
-    #[ApiSubresource]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\OneToMany(mappedBy: 'gallery', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
-    #[ApiSubresource]
-    #[ORM\ManyToMany(targetEntity: Tag::class)]
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
+    #[ApiSubresource(maxDepth: 1)]
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'galleries')]
     private Collection $tags;
 
     public function __construct()
@@ -114,6 +134,11 @@ class Gallery
     public function setCreatedAtValue()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getPages(): int
+    {
+        return count($this->images);
     }
 
     public function getId(): ?int

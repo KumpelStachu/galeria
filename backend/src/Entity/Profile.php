@@ -12,18 +12,32 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Controller\MyProfileController;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['profile', 'profile:read']],
     denormalizationContext: ['groups' => ['profile', 'profile:write']],
-    collectionOperations: ['get'],
+    collectionOperations: [
+        'get',
+        'me' => [
+            'method' => 'GET',
+            'path' => '/profiles/me',
+            'security_post_denormalize' => 'is_granted("ROLE_USER")',
+            'controller' => MyProfileController::class,
+            'deserialize' => false,
+        ]
+    ],
     itemOperations: [
         'get',
         'patch' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)"'],
         'delete' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN")'],
     ]
-)
-]
+)]
+#[ApiFilter(OrderFilter::class)]
 #[ORM\Entity(repositoryClass: ProfileRepository::class), ORM\HasLifecycleCallbacks]
 class Profile implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -31,10 +45,12 @@ class Profile implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['profile:read'])]
     private int $id;
 
+    #[ApiFilter(DateFilter::class)]
     #[Groups(['profile:read'])]
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
     
+    #[ApiFilter(SearchFilter::class, strategy: 'ipartial')]
     #[Groups(['profile'])]
     #[ORM\Column(length: 30, unique: true)]
     private string $username;
@@ -50,11 +66,12 @@ class Profile implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 320)]
     private string $description = '';
 
+    #[ApiSubresource(maxDepth: 1)]
     #[Groups(['profile'])]
     #[ORM\OneToMany(mappedBy: 'profile', targetEntity: Gallery::class, orphanRemoval: true)]
     private Collection $galleries;
 
-    #[ApiSubresource]
+    #[ApiSubresource(maxDepth: 1)]
     #[Groups(['profile'])]
     #[ORM\OneToMany(mappedBy: 'profile', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;

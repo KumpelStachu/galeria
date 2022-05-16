@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 #[ApiResource(
     collectionOperations: [
@@ -19,24 +23,27 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
         'delete' => ['security_post_denormalize' => 'is_granted("ROLE_ADMIN") or (object.getProfile() == user)'],
     ]
 )]
+#[ApiFilter(OrderFilter::class)]
 #[ORM\Entity(repositoryClass: CommentRepository::class), ORM\HasLifecycleCallbacks]
 class Comment
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private int $id;
 
+    #[ApiFilter(DateFilter::class)]
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
 
+    #[ApiFilter(SearchFilter::class, strategy: 'ipartial')]
     #[ORM\Column(length: 320)]
     private string $content;
 
-    // #[ApiSubresource]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\ManyToOne(targetEntity: Profile::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private Profile $profile;
 
-    // #[ApiSubresource]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\ManyToOne(targetEntity: Gallery::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private Gallery $gallery;

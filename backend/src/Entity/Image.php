@@ -11,6 +11,10 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Controller\PostImageController;
 use App\Controller\GetImageController;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 #[ApiResource(
     collectionOperations: ['get'],
@@ -38,19 +42,25 @@ use App\Controller\GetImageController;
         ],
     ]
 )]
+#[ApiFilter(OrderFilter::class)]
 #[ORM\Entity(repositoryClass: ImageRepository::class), ORM\HasLifecycleCallbacks]
 class Image
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private int $id;
 
+    #[ApiFilter(DateFilter::class)]
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
 
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\ManyToOne(targetEntity: Profile::class)] //, inversedBy: 'images'
     #[ORM\JoinColumn(nullable: false)]
     private Profile $profile;
 
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
+    #[ApiSubresource(maxDepth: 1)]
     #[ORM\ManyToOne(targetEntity: Gallery::class, inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     private Gallery $gallery;
