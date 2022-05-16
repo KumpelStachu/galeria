@@ -22,8 +22,7 @@ async function handleSubmit() {
 		})
 
 		localStorage.token = token
-		console.log(route.fullPath.slice(12))
-		router.push(route.fullPath.slice(12) || '/')
+		location.assign(route.fullPath.slice(12) || '/')
 	} catch (_) {
 		error = true
 	}

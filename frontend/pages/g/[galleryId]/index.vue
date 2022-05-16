@@ -6,6 +6,8 @@ const comments = await useComments(galleryId)
 const gallery = await useGallery(galleryId)
 const images = await useImages(galleryId)
 const tags = await useTags(galleryId)
+
+onMounted(() => scrollTo({ top: 0 }))
 </script>
 
 <template>

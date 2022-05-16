@@ -10,21 +10,20 @@ const { gallery, images, tags } = defineProps<{
 	images: Image[]
 	tags: Tag[]
 }>()
+
+const nsfw = useNsfw(onMounted, onUnmounted)
 </script>
 
 <template>
-	<div class="card bg-neutral lg:card-side lg:grid lg:grid-cols-7">
-		<figure class="col-span-3 overflow-hidden">
+	<div class="card bg-neutral md:card-side md:grid md:grid-cols-7">
+		<NuxtLink :href="`/g/${gallery.id}/1`" class="col-span-3 overflow-hidden">
 			<img
-				class="aspect-[7/5] scale-125 bg-neutral-content hover:scale-100 hover:duration-1000"
-				:class="{
-					'blur-xl hover:blur-none transition-[filter,transform] hover:delay-500': gallery.nsfw,
-					'transition-[transform]': !gallery.nsfw,
-				}"
+				class="object-cover aspect-[7/5] scale-110 bg-neutral-content hover:scale-100 hover:duration-500 duration-200"
+				:class="gallery.nsfw && !nsfw ? 'blur-xl hover:blur-none hover:delay-500' : 'blur-none'"
 				:src="BASE_URL + images[0].file"
 				:alt="gallery.title"
 			/>
-		</figure>
+		</NuxtLink>
 		<div class="col-span-4 card-body">
 			<h2 class="card-title">{{ gallery.title }}</h2>
 			<div class="flex flex-wrap gap-2 mt-3">

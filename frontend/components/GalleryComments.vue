@@ -8,7 +8,6 @@ const { gallery } = defineProps<{
 }>()
 
 const next = $computed(() => `?next=/g/${gallery.id}/#comments`)
-const user = await useUser()
 </script>
 
 <template>
@@ -16,15 +15,16 @@ const user = await useUser()
 		<div class="card-body" id="comments">
 			<h2 class="card-title">Komentarze ({{ gallery?.comments.length }})</h2>
 
-			<div v-if="user" class="">
-				<input type="text" placeholder="Napisz komentarz..." />
-			</div>
-			<div v-else class="my-2">
-				<NuxtLink :to="`/login${next}`" class="link">Zaloguj się</NuxtLink>
-				<span> lub </span>
-				<NuxtLink :to="`/register${next}`" class="link">zarejestruj się</NuxtLink>
-				<span>, aby móc komentować.</span>
-			</div>
+			<ClientOnly>
+				<CommentInput>
+					<div class="my-2">
+						<NuxtLink :to="`/login${next}`" class="link">Zaloguj się</NuxtLink>
+						<span> lub </span>
+						<NuxtLink :to="`/register${next}`" class="link">zarejestruj się</NuxtLink>
+						<span>, aby móc komentować.</span>
+					</div>
+				</CommentInput>
+			</ClientOnly>
 
 			<div
 				v-for="comment in comments"

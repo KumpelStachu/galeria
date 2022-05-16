@@ -20,6 +20,7 @@ lexik_jwt_authentication:
             name: apikey
 
     set_cookies:
-        apikey: ~
+        apikey:
+            domain: ngallery.pics
 
     remove_token_from_body_when_cookies_used: false

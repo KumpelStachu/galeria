@@ -3,7 +3,7 @@
 </script>
 
 <template>
-	<div class="flex gap-3">
+	<div class="flex flex-wrap gap-3">
 		<NuxtLink to="/g/1">
 			<button class="btn">Galeria 1</button>
 		</NuxtLink>

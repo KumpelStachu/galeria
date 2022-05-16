@@ -8,12 +8,14 @@ specifiers:
   '@nuxtjs/tailwindcss': ^5.0.3
   daisyui: ^2.14.2
   nuxt: 3.0.0-rc.3
+  vue-intersection-observer: ^0.1.8
 
 devDependencies:
   '@heroicons/vue': 1.0.6
   '@nuxtjs/tailwindcss': 5.0.4
   daisyui: 2.14.3
   nuxt: 3.0.0-rc.3
+  vue-intersection-observer: 0.1.8
 
 packages:
 
@@ -1594,6 +1596,11 @@ packages:
     dependencies:
       depd: 2.0.0
       keygrip: 1.1.0
+    dev: true
+
+  /core-js/3.22.5:
+    resolution: {integrity: sha512-VP/xYuvJ0MJWRAobcmQ8F2H6Bsn+s7zqAAjFaHGBMc5AQm7zaelhD1LGduFn2EehEcQcU+br6t+fwbpQ5d1ZWA==}
+    requiresBuild: true
     dev: true
 
   /core-util-is/1.0.3:
@@ -5507,6 +5514,18 @@ packages:
       bundle-runner: 0.0.1
     dev: true
 
+  /vue-intersection-observer/0.1.8:
+    resolution: {integrity: sha512-cjk4BP9iXBStamb5HSekG3frWZWk8FYv+ry9Q9+yeG80dxOkf3/AoODQYhtp00/UuJKjLdSXEJG4+9plA7rRsQ==}
+    dependencies:
+      core-js: 3.22.5
+      vue: 2.6.14
+      vue-router: 3.5.4
+    dev: true
+
+  /vue-router/3.5.4:
+    resolution: {integrity: sha512-x+/DLAJZv2mcQ7glH2oV9ze8uPwcI+H+GgTgTmb5I55bCgY3+vXWIsqbYUzbBSZnwFHEJku4eoaH/x98veyymQ==}
+    dev: true
+
   /vue-router/4.0.15_vue@3.2.33:
     resolution: {integrity: sha512-xa+pIN9ZqORdIW1MkN2+d9Ui2pCM1b/UMgwYUCZOiFYHAvz/slKKBDha8DLrh5aCG/RibtrpyhKjKOZ85tYyWg==}
     peerDependencies:
@@ -5514,6 +5533,10 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.1.4
       vue: 3.2.33
+    dev: true
+
+  /vue/2.6.14:
+    resolution: {integrity: sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==}
     dev: true
 
   /vue/3.2.33:

@@ -10,7 +10,8 @@
 		"@heroicons/vue": "^1.0.6",
 		"@nuxtjs/tailwindcss": "^5.0.3",
 		"daisyui": "^2.14.2",
-		"nuxt": "3.0.0-rc.3"
+		"nuxt": "3.0.0-rc.3",
+		"vue-intersection-observer": "^0.1.8"
 	},
 	"pnpm": {
 		"overrides": {
